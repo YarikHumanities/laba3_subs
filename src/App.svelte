@@ -84,16 +84,19 @@ const deleteCity = async () => {
 </script>
 
 <main> 
+	<body>
 	<!--{JSON.stringify($cities)} -->
 	{#if $cities.loading}
 	<h1>Loading</h1>
 	{:else if $cities.error}
 	<h1>Error</h1>
 	{:else if $cities.data}
-	<button on:click={addCity}>Add</button>
-	<button on:click={deleteCity}>Delete city</button>
-	<button on:click={deleteCityOnCounrty}>Delete country</button>
-	<table border="1">
+	<div class="buttns">
+	<button class="btn" on:click={addCity}>Add</button>
+	<button class="btn" on:click={deleteCity}>Delete city</button>
+	<button class="btn" on:click={deleteCityOnCounrty}>Delete country</button>
+	</div>
+	<table border="1" class="ourTable">
 		<caption>Cities</caption>
 		<tr>
 			<th>City</th>
@@ -110,6 +113,7 @@ const deleteCity = async () => {
 		
 	</table>
 	{/if}
+	</body>
 	<!-- <button on:click={addCity}>Add</button>
 	<button on:click={deleteCity}>Delete city</button>
 	<button on:click={deleteCityOnCounrty}>Delete country</button>
@@ -124,4 +128,32 @@ const deleteCity = async () => {
 </main>
 
 <style>
+	.btn {
+		background-color: #4CAF50; /* Green */
+  		border: none;
+  		color: white;
+  		padding: 15px 32px;
+  		text-align: center;
+  		text-decoration: none;
+  		display: inline-block;
+  		font-size: 16px;
+		text-align:center;
+		margin-left: auto;
+  		margin-right: auto;
+	}
+	.buttns{
+		align-items: center;
+		justify-content: center;
+		margin-left: auto;
+  		margin-right: auto;
+	}
+	.btn:hover{
+    opacity: 0.7;
+	}
+	.ourTable {
+		margin-left: auto;
+  		margin-right: auto;
+	}
+
+	
 </style>
