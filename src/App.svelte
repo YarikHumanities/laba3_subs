@@ -83,7 +83,7 @@ const deleteCity = async () => {
 
 </script>
 
-<main>
+<main> 
 	<!--{JSON.stringify($cities)} -->
 	{#if $cities.loading}
 	<h1>Loading</h1>
