@@ -1,7 +1,8 @@
 import { gql } from "@apollo/client";
 
 export class OperationsDocHelper {
-    static QUERY_get_all = () => `
+  static QUERY_get_all() {
+    return `
     query MyQuery {
       laba3_cities {
         city_name
@@ -11,8 +12,10 @@ export class OperationsDocHelper {
       }
     }
   `;
+  }
 
-    static MUTATION_insert = (name, country, people) => `mutation MyMutation {
+  static MUTATION_insert(name, country, people) {
+    return `mutation MyMutation {
         insert_laba3_cities(objects: {city_name: "${name}", country_name: "${country}", population: "${people}"}) {
           returning {
             id
@@ -22,8 +25,10 @@ export class OperationsDocHelper {
           }
         }
       }`;
+  }
 
-    static MUTATION_deleteOnCountry = (country) =>`mutation MyMutation {
+  static MUTATION_deleteOnCountry(country) {
+    return `mutation MyMutation {
         delete_laba3_cities(where: {country_name: {_eq: ${country}}}) {
           returning {
             id
@@ -33,8 +38,10 @@ export class OperationsDocHelper {
           }
         }
       }`;
+  }
 
-      static MUTATION_deleteOnCity = (city) => `mutation MyMutation {
+  static MUTATION_deleteOnCity(city) {
+    return `mutation MyMutation {
         delete_laba3_cities(where: {city_name: {_eq:  ${city}}}) {
           returning {
             id
@@ -44,15 +51,18 @@ export class OperationsDocHelper {
           }
         }
       }`;
+  }
 
-
-    static SUBSCRIPTION_all = gql`
-    subscription MySubscription {
+  static SUBSCRIPTION_all() {
+    return gql`
+      subscription MySubscription {
         laba3_cities {
           id
           city_name
           country_name
           population
         }
-      }`
+      }
+    `;
+  }
 }
