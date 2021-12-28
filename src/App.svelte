@@ -4,12 +4,26 @@ import {OperationsDocHelper} from './helper/operations-doc-helper'
 import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client';
 import { setClient, subscribe } from "svelte-apollo";
 import { WebSocketLink } from "@apollo/client/link/ws";
+import { writable } from "svelte/store";
 
+  const offline = writable(false);
+  window.onoffline = () => {
+    offline.set(true);
+  };
+  window.ononline = () => {
+    offline.set(false);
+  };
 function createApolloClient() {
+	const headers = {
+		"x-hasura-admin-secret": 'secret'
+	}
    const wsLink = new WebSocketLink({
      uri: "wss://our-table.herokuapp.com/v1/graphql",
 	 options: {
 		 recconect: true,
+		 connectionParams:{
+			headers
+		 }
 	 },
    });
 
@@ -84,36 +98,41 @@ const deleteCity = async () => {
 </script>
 
 <main> 
+	{#if !$offline}
 	<body>
-	<!--{JSON.stringify($cities)} -->
-	{#if $cities.loading}
-	<h1>Loading</h1>
-	{:else if $cities.error}
-	<h1>Error</h1>
-	{:else if $cities.data}
-	<div class="buttns">
-	<button class="btn" on:click={addCity}>Add</button>
-	<button class="btn" on:click={deleteCity}>Delete city</button>
-	<button class="btn" on:click={deleteCityOnCounrty}>Delete country</button>
-	</div>
-	<table border="1" class="ourTable">
-		<caption>Cities</caption>
-		<tr>
-			<th>City</th>
-			<th>Country</th>
-			<th>Population</th>
-		</tr>
-		{#each $cities.data.laba3_cities as cities (cities.id)}
-		<tr>
-			<td>{cities.city_name}</td>
-			<td>{cities.country_name}</td>
-			<td>{cities.population}</td>
-		</tr>  
-		{/each}
-		
-	</table>
-	{/if}
-	</body>
+		<!--{JSON.stringify($cities)} -->
+		{#if $cities.loading}
+		<h1>Loading</h1>
+		{:else if $cities.error}
+		<h1>Error</h1>
+		{:else if $cities.data}
+		<div class="buttns">
+		<button class="btn" on:click={addCity}>Add</button>
+		<button class="btn" on:click={deleteCity}>Delete city</button>
+		<button class="btn" on:click={deleteCityOnCounrty}>Delete country</button>
+		</div>
+		<table border="1" class="ourTable">
+			<caption>Cities</caption>
+			<tr>
+				<th>City</th>
+				<th>Country</th>
+				<th>Population</th>
+			</tr>
+			{#each $cities.data.laba3_cities as cities (cities.id)}
+			<tr>
+				<td>{cities.city_name}</td>
+				<td>{cities.country_name}</td>
+				<td>{cities.population}</td>
+			</tr>  
+			{/each}
+			
+		</table>
+		{/if}
+		</body>
+{:else}
+    <h1>You are offline</h1>
+  {/if}
+	
 	<!-- <button on:click={addCity}>Add</button>
 	<button on:click={deleteCity}>Delete city</button>
 	<button on:click={deleteCityOnCounrty}>Delete country</button>
