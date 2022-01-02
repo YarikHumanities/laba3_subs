@@ -9,7 +9,10 @@ class RequestHelper {
               query: operationsDoc,
               variables: variables,
               operationName: operationName
-            })
+            }),
+            headers: {
+              "x-hasura-admin-secret": "secret",
+            }
           }
         );
       

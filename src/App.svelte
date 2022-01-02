@@ -6,10 +6,16 @@ import { setClient, subscribe } from "svelte-apollo";
 import { WebSocketLink } from "@apollo/client/link/ws";
 
 function createApolloClient() {
+	const headers= {
+        "x-hasura-admin-secret": "secret",
+      }
    const wsLink = new WebSocketLink({
      uri: "wss://our-table.herokuapp.com/v1/graphql",
 	 options: {
 		 recconect: true,
+		 connectionParams: {
+			 headers
+		 }
 	 },
    });
 
