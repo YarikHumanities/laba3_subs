@@ -5,7 +5,7 @@
   import { setClient, subscribe } from "svelte-apollo";
   import { WebSocketLink } from "@apollo/client/link/ws";
   import { writable } from "svelte/store";
-
+  const isLoading = writable(false);
   const newCountry = {};
   const deleteCountry = {};
   const offline = writable(false);
@@ -45,11 +45,14 @@
     const { city, country, population } = newCountry;
     if (!city || !country || !population) return;
     try {
+      isLoading.set(true);
       await http.startExecuteMyMutation(
         OperationsDocHelper.MUTATION_insert(city, country, population),
       );
     } catch (e) {
       console.error(e);
+    } finally {
+      isLoading.set(false);
     }
     newCountry.city = "";
     newCountry.country = "";
@@ -59,83 +62,97 @@
   const deleteCityOnCounrty = async () => {
     const { country } = deleteCountry;
     try {
+      isLoading.set(true);
       await http.startExecuteMyMutation(
         OperationsDocHelper.MUTATION_deleteOnCountry(country),
       );
     } catch (e) {
       console.error(e);
+    } finally {
+      isLoading.set(false);
     }
   };
 
   const deleteCity = async () => {
     const { city } = deleteCountry;
     try {
+      isLoading.set(true);
+
       await http.startExecuteMyMutation(
         OperationsDocHelper.MUTATION_deleteOnCity(city),
       );
     } catch (e) {
       console.error(e);
+    } finally {
+      isLoading.set(false);
     }
   };
 </script>
 
 <main>
   {#if !$offline}
-    <body>
-      {#if $cities.loading}
-        <h1>Loading</h1>
-      {:else if $cities.error}
-        <h1>Error</h1>
-      {:else if $cities.data}
-        <div>
+    {#if $isLoading}
+      <img alt="loader" src="./loader.gif" />
+    {:else}
+      <body>
+        {#if $cities.loading}
+          <h1>Loading</h1>
+        {:else if $cities.error}
+          <h1>Error</h1>
+        {:else if $cities.data}
           <div>
-            <input placeholder="Enter city name" bind:value={newCountry.city} />
+            <div>
+              <input
+                placeholder="Enter city name"
+                bind:value={newCountry.city}
+              />
+              <input
+                placeholder="Enter country name"
+                bind:value={newCountry.country}
+              />
+              <input
+                placeholder="Enter population"
+                bind:value={newCountry.population}
+              />
+              <button class="btn" on:click={addCity}>Add</button>
+            </div>
+
+            <div>
+              <input
+                placeholder="Enter city name"
+                bind:value={deleteCountry.city}
+              />
+              <button class="btn" on:click={deleteCity}>Delete city</button>
+            </div>
+
             <input
               placeholder="Enter country name"
-              bind:value={newCountry.country}
+              bind:value={deleteCountry.country}
             />
-            <input
-              placeholder="Enter population"
-              bind:value={newCountry.population}
-            />
-            <button class="btn" on:click={addCity}>Add</button>
+
+            <button class="btn" on:click={deleteCityOnCounrty}
+              >Delete country</button
+            >
+            <div />
           </div>
-
-          <div>
-            <input
-              placeholder="Enter city name"
-              bind:value={deleteCountry.city}
-            />
-            <button class="btn" on:click={deleteCity}>Delete city</button>
-          </div>
-
-          <input
-            placeholder="Enter country name"
-            bind:value={deleteCountry.country}
-          />
-
-          <button class="btn" on:click={deleteCityOnCounrty}
-            >Delete country</button
-          >
-          <div />
-        </div>
-        <table border="1" class="ourTable">
-          <caption>Cities</caption>
-          <tr>
-            <th>City</th>
-            <th>Country</th>
-            <th>Population</th>
-          </tr>
-          {#each $cities.data.laba3_cities as cities (cities.id)}
+          <table border="1" class="ourTable">
+            <caption>Cities</caption>
             <tr>
-              <td>{cities.city_name}</td>
-              <td>{cities.country_name}</td>
-              <td>{cities.population}</td>
+              <th>City</th>
+              <th>Country</th>
+              <th>Population</th>
             </tr>
-          {/each}
-        </table>
-      {/if}
-    </body>
+            {#each $cities.data.laba3_cities as cities (cities.id)}
+              <tr>
+                <td>{cities.city_name}</td>
+                <td>{cities.country_name}</td>
+                <td>{cities.population}</td>
+              </tr>
+            {/each}
+          </table>
+        {/if}
+      </body>
+    {/if}
   {:else}
     <h1>You are offline</h1>
   {/if}
