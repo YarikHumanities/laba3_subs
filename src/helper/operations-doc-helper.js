@@ -29,7 +29,7 @@ export class OperationsDocHelper {
 
   static MUTATION_deleteOnCountry(country) {
     return `mutation MyMutation {
-        delete_laba3_cities(where: {country_name: {_eq: ${country}}}) {
+        delete_laba3_cities(where: {country_name: {_eq: "${country}"}}) {
           returning {
             id
             city_name
@@ -42,7 +42,7 @@ export class OperationsDocHelper {
 
   static MUTATION_deleteOnCity(city) {
     return `mutation MyMutation {
-        delete_laba3_cities(where: {city_name: {_eq:  ${city}}}) {
+        delete_laba3_cities(where: {city_name: {_eq:  "${city}"}}) {
           returning {
             id
             city_name

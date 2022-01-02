@@ -6,6 +6,8 @@
   import { WebSocketLink } from "@apollo/client/link/ws";
   import { writable } from "svelte/store";
 
+  const newCountry = {};
+  const deleteCountry = {};
   const offline = writable(false);
   window.onoffline = () => {
     offline.set(true);
@@ -15,10 +17,10 @@
   };
   function createApolloClient() {
     const headers = {
-      "x-hasura-admin-secret": "secret",
+      "x-hasura-admin-secret": ADMIN_SECRET,
     };
     const wsLink = new WebSocketLink({
-      uri: "wss://our-table.herokuapp.com/v1/graphql",
+      uri: WS_LINK,
       options: {
         recconect: true,
         connectionParams: {
@@ -39,80 +41,83 @@
 
   const cities = subscribe(OperationsDocHelper.SUBSCRIPTION_all());
 
-  //window.onload = async () =>{
-
-  //const {laba3_cities} = await http.startFetchMyQuery(OperationsDocHelper.QUERY_get_all());
-  //cities=laba3_cities;
-  //renderTable();
-  //}
-
-  //const renderTable = () => {
-  //const table = document.querySelector('table')
-
-  //cities.forEach(city => {
-  //table.innerHTML+=`<tr>
-  //<td>${city.city_name}</td>
-  //<td>${city.country_name}</td>
-  //<td>${city.population}</td>
-  //</tr>`;
-  //})
-
-  //}
-
-  const convert = (string) => {
-    return isNaN(+string) ? 0 : +string;
-  };
-
   const addCity = async () => {
-    const naming = prompt("City: ") ?? "";
-    const country = prompt("Country: ") ?? "";
-    const people = convert(prompt("Population: ") ?? "");
-    //console.log(naming);
-    if (!naming || !country || !people) return;
-    /*const {insert_laba3_cities} = */ await http.startExecuteMyMutation(
-      OperationsDocHelper.MUTATION_insert(naming, country, people),
-    );
-    //const {returning} = insert_laba3_cities;
-    //cities.push(returning[0]);
-    //renderTable();
-    //console.log(result);
+    const { city, country, population } = newCountry;
+    if (!city || !country || !population) return;
+    try {
+      await http.startExecuteMyMutation(
+        OperationsDocHelper.MUTATION_insert(city, country, population),
+      );
+    } catch (e) {
+      console.error(e);
+    }
+    newCountry.city = "";
+    newCountry.country = "";
+    newCountry.population = "";
   };
 
   const deleteCityOnCounrty = async () => {
-    const country = prompt("Country: ") ?? "";
-    /*const {delete_laba3_cities} = */ await http.startExecuteMyMutation(
-      OperationsDocHelper.MUTATION_deleteOnCountry(country),
-    );
-    //const {returning} = delete_laba3_cities;
-    //cities.push(returning[0]);
-    //renderTable();
+    const { country } = deleteCountry;
+    try {
+      await http.startExecuteMyMutation(
+        OperationsDocHelper.MUTATION_deleteOnCountry(country),
+      );
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const deleteCity = async () => {
-    const city = prompt("City: ") ?? "";
-    const { delete_laba3_cities } = await http.startExecuteMyMutation(
-      OperationsDocHelper.MUTATION_deleteOnCity(city),
-    );
-    const { returning } = delete_laba3_cities;
-    //renderTable();
+    const { city } = deleteCountry;
+    try {
+      await http.startExecuteMyMutation(
+        OperationsDocHelper.MUTATION_deleteOnCity(city),
+      );
+    } catch (e) {
+      console.error(e);
+    }
   };
 </script>
 
 <main>
   {#if !$offline}
     <body>
-      <!--{JSON.stringify($cities)} -->
       {#if $cities.loading}
         <h1>Loading</h1>
       {:else if $cities.error}
         <h1>Error</h1>
       {:else if $cities.data}
-        <div class="buttns">
-          <button class="btn" on:click={addCity}>Add</button>
-          <button class="btn" on:click={deleteCity}>Delete city</button>
+        <div>
+          <div>
+            <input placeholder="Enter city name" bind:value={newCountry.city} />
+            <input
+              placeholder="Enter country name"
+              bind:value={newCountry.country}
+            />
+            <input
+              placeholder="Enter population"
+              bind:value={newCountry.population}
+            />
+            <button class="btn" on:click={addCity}>Add</button>
+          </div>
+
+          <div>
+            <input
+              placeholder="Enter city name"
+              bind:value={deleteCountry.city}
+            />
+            <button class="btn" on:click={deleteCity}>Delete city</button>
+          </div>
+
+          <input
+            placeholder="Enter country name"
+            bind:value={deleteCountry.country}
+          />
+
           <button class="btn" on:click={deleteCityOnCounrty}
             >Delete country</button
           >
+          <div />
         </div>
         <table border="1" class="ourTable">
           <caption>Cities</caption>
@@ -134,36 +139,22 @@
   {:else}
     <h1>You are offline</h1>
   {/if}
-
-  <!-- <button on:click={addCity}>Add</button>
-	<button on:click={deleteCity}>Delete city</button>
-	<button on:click={deleteCityOnCounrty}>Delete country</button>
-	<table border="1">
-		<caption>Cities</caption>
-		<tr>
-			<th>City</th>
-			<th>Country</th>
-			<th>Population</th>
-		</tr>
-	</table> -->
 </main>
 
 <style>
+  :root {
+    --green: #4caf50;
+    --white: #fff;
+  }
   .btn {
-    background-color: #4caf50; /* Green */
+    background-color: var(--green);
     border: none;
-    color: #fff;
+    color: var(--white);
     padding: 15px 32px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
     font-size: 16px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  .buttns {
-    align-items: center;
-    justify-content: center;
     margin-left: auto;
     margin-right: auto;
   }
