@@ -39,7 +39,7 @@ export class OperationsDocHelper {
           }
         }
       }`;
-    }  
+  }
 
   static SUBSCRIPTION_all() {
     return gql`
@@ -53,5 +53,4 @@ export class OperationsDocHelper {
       }
     `;
   }
-
 }

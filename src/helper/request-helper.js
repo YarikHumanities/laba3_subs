@@ -16,7 +16,6 @@ class RequestHelper {
     }).then((result) => result.json());
   }
 
-
   fetchMyQuery(operationsDoc) {
     return this.fetchGraphQL(operationsDoc, "MyQuery", {});
   }

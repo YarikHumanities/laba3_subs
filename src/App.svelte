@@ -64,9 +64,7 @@
     newCountry.population = "";
   };
 
-  
   const deleteCity = async (id) => {
-   
     try {
       isLoading.set(true);
 
@@ -120,14 +118,18 @@
               <th>Delete</th>
             </tr>
             {#if $cities.data.laba3_cities.length}
-            {#each $cities.data.laba3_cities as cities (cities.id)}
-              <tr>
-                <td>{cities.city_name}</td>
-                <td>{cities.country_name}</td>
-                <td>{cities.population}</td>
-                <td><button class="btn" on:click={()=>deleteCity(cities.id)}>Delete city</button></td>
-              </tr>
-            {/each}
+              {#each $cities.data.laba3_cities as cities (cities.id)}
+                <tr>
+                  <td>{cities.city_name}</td>
+                  <td>{cities.country_name}</td>
+                  <td>{cities.population}</td>
+                  <td
+                    ><button class="btn" on:click={() => deleteCity(cities.id)}
+                      >Delete city</button
+                    ></td
+                  >
+                </tr>
+              {/each}
             {:else}
               <h1>No cities</h1>
             {/if}
