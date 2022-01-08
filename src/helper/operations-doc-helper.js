@@ -27,9 +27,10 @@ export class OperationsDocHelper {
       }`;
   }
 
+  static MUTATION_deleteOnCity(id) {
+    return `mutation MyMutation {
 
-    static MUTATION_deleteOnCountry = (country) =>`mutation MyMutation {
-        delete_laba3_cities(where: {country_name: {_eq: "${country}"}}) {
+        delete_laba3_cities(where: {id: {_eq:  "${id}"}}) {
           returning {
             id
             city_name
@@ -38,20 +39,7 @@ export class OperationsDocHelper {
           }
         }
       }`;
-
-
-
-    static MUTATION_deleteOnCity = (city) => `mutation MyMutation {
-        delete_laba3_cities(where: {city_name: {_eq:  "${city}"}}) {
-          returning {
-            id
-            city_name
-            country_name
-            population
-          }
-        }
-      }`;
-    
+    }  
 
   static SUBSCRIPTION_all() {
     return gql`

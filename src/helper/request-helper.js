@@ -1,24 +1,21 @@
 class RequestHelper {
+  constructor() {
+    this.API_url = HTTP_LINK;
+  }
+  async fetchGraphQL(operationsDoc, operationName, variables) {
+    return fetch(this.API_url, {
+      method: "POST",
+      body: JSON.stringify({
+        query: operationsDoc,
+        variables: variables,
+        operationName: operationName,
+      }),
+      headers: {
+        "x-hasura-admin-secret": ADMIN_SECRET,
+      },
+    }).then((result) => result.json());
+  }
 
-    API_url = "https://our-table.herokuapp.com/v1/graphql"
-    async fetchGraphQL(operationsDoc, operationName, variables) {
-        const result = await fetch(
-          this.API_url,
-          {
-            method: "POST",
-            body: JSON.stringify({
-              query: operationsDoc,
-              variables: variables,
-              operationName: operationName
-            }),
-            headers: {
-              "x-hasura-admin-secret": "secret",
-            }
-          }
-        );
-      
-        return await result.json();
-      }
 
   fetchMyQuery(operationsDoc) {
     return this.fetchGraphQL(operationsDoc, "MyQuery", {});
@@ -28,8 +25,8 @@ class RequestHelper {
     const { errors, data } = await this.fetchMyQuery(operationsDoc);
 
     if (errors) {
-      // handle those errors like a pro
-      console.error(errors);
+      console.error(`Query was not successful: ${errors}`);
+      return null;
     }
 
     // do something great with this precious data
