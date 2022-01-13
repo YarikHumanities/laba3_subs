@@ -6,7 +6,8 @@
   import { WebSocketLink } from "@apollo/client/link/ws";
   import { writable } from "svelte/store";
 
-  const isLoading = writable(false);
+  //const isLoading = writable(false);
+  let isLoading="";
 
   const newCountry = {};
   const deleteCountry = {};
@@ -50,14 +51,16 @@
     const { city, country, population } = newCountry;
     if (!city || !country || !population) return;
     try {
-      isLoading.set(true);
+      //isLoading.set(true);
+      isLoading=true;
       await http.startExecuteMyMutation(
         OperationsDocHelper.MUTATION_insert(city, country, population),
       );
     } catch (e) {
       console.error(e);
     } finally {
-      isLoading.set(false);
+      //isLoading.set(false);
+      isLoading=false;
     }
     newCountry.city = "";
     newCountry.country = "";
@@ -66,7 +69,8 @@
 
   const deleteCity = async (id) => {
     try {
-      isLoading.set(true);
+      //isLoading.set(true);
+      isLoading=true;
 
       await http.startExecuteMyMutation(
         OperationsDocHelper.MUTATION_deleteOnCity(id),
@@ -74,14 +78,15 @@
     } catch (e) {
       console.error(e);
     } finally {
-      isLoading.set(false);
+      //isLoading.set(false);
+      isLoading=false;
     }
   };
 </script>
 
 <main>
   {#if !$offline}
-    {#if $isLoading}
+    {#if isLoading}
       <img alt="loader" src="./loader.gif" />
     {:else}
       <body>
