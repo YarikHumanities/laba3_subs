@@ -6,6 +6,8 @@
   import { WebSocketLink } from "@apollo/client/link/ws";
   import { writable } from "svelte/store";
 
+
+  export const userMsg = writable("");
   //const isLoading = writable(false);
   let isLoading = "";
 
@@ -13,15 +15,15 @@
   const deleteCountry = {};
 
   //const offline = writable(false);
-  let offline="";
+  let offline = "";
 
   window.onoffline = () => {
     //offline.set(true);
-    offline=true;
+    offline = true;
   };
   window.ononline = () => {
     //offline.set(false);
-    offline=false;
+    offline = false;
   };
 
   function createApolloClient() {
@@ -59,8 +61,11 @@
       await http.startExecuteMyMutation(
         OperationsDocHelper.MUTATION_insert(city, country, population),
       );
+      $userMsg = "Added";
     } catch (e) {
       console.error(e);
+      $userMsg = `Error: ${e.message}`;
+      
     } finally {
       //isLoading.set(false);
       isLoading = false;
@@ -72,16 +77,16 @@
 
   const deleteCity = async (id) => {
     try {
-      //isLoading.set(true);
       isLoading = true;
 
       await http.startExecuteMyMutation(
         OperationsDocHelper.MUTATION_deleteOnCity(id),
       );
+      $userMsg = "Delete done";
     } catch (e) {
       console.error(e);
+      $userMsg = `Error: ${e.message}`;
     } finally {
-      //isLoading.set(false);
       isLoading = false;
     }
   };
@@ -93,6 +98,7 @@
       <img alt="loader" src="./loader.gif" />
     {:else}
       <body>
+        <div class="label_mass">{$userMsg}</div>
         {#if $cities.loading}
           <h1>Loading</h1>
         {:else if $cities.error}
@@ -143,6 +149,7 @@
             {/if}
           </table>
         {/if}
+        
       </body>
     {/if}
   {:else}
