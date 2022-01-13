@@ -6,7 +6,6 @@
   import { WebSocketLink } from "@apollo/client/link/ws";
   import { writable } from "svelte/store";
 
-
   export const userMsg = writable("");
   //const isLoading = writable(false);
   let isLoading = "";
@@ -65,7 +64,6 @@
     } catch (e) {
       console.error(e);
       $userMsg = `Error: ${e.message}`;
-      
     } finally {
       //isLoading.set(false);
       isLoading = false;
@@ -149,7 +147,6 @@
             {/if}
           </table>
         {/if}
-        
       </body>
     {/if}
   {:else}

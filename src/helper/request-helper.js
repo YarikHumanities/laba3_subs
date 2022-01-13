@@ -38,14 +38,12 @@ class RequestHelper {
   }
 
   async startExecuteMyMutation(operationsDoc) {
- 
     const { errors, data } = await this.executeMyMutation(operationsDoc);
     if (errors) {
       throw new Error(errors[0].message);
     }
     return data;
   }
-
 }
 
 export default new RequestHelper();
