@@ -7,18 +7,21 @@
   import { writable } from "svelte/store";
 
   //const isLoading = writable(false);
-  let isLoading="";
+  let isLoading = "";
 
   const newCountry = {};
   const deleteCountry = {};
 
-  const offline = writable(false);
+  //const offline = writable(false);
+  let offline="";
 
   window.onoffline = () => {
-    offline.set(true);
+    //offline.set(true);
+    offline=true;
   };
   window.ononline = () => {
-    offline.set(false);
+    //offline.set(false);
+    offline=false;
   };
 
   function createApolloClient() {
@@ -52,7 +55,7 @@
     if (!city || !country || !population) return;
     try {
       //isLoading.set(true);
-      isLoading=true;
+      isLoading = true;
       await http.startExecuteMyMutation(
         OperationsDocHelper.MUTATION_insert(city, country, population),
       );
@@ -60,7 +63,7 @@
       console.error(e);
     } finally {
       //isLoading.set(false);
-      isLoading=false;
+      isLoading = false;
     }
     newCountry.city = "";
     newCountry.country = "";
@@ -70,7 +73,7 @@
   const deleteCity = async (id) => {
     try {
       //isLoading.set(true);
-      isLoading=true;
+      isLoading = true;
 
       await http.startExecuteMyMutation(
         OperationsDocHelper.MUTATION_deleteOnCity(id),
@@ -79,13 +82,13 @@
       console.error(e);
     } finally {
       //isLoading.set(false);
-      isLoading=false;
+      isLoading = false;
     }
   };
 </script>
 
 <main>
-  {#if !$offline}
+  {#if !offline}
     {#if isLoading}
       <img alt="loader" src="./loader.gif" />
     {:else}
