@@ -92,9 +92,9 @@
 
 <main>
   {#if !offline}
-    {#if isLoading}
-      <img alt="loader" src="./loader.gif" />
-    {:else}
+    <!-- {#if isLoading} -->
+      
+    <!-- {:else} -->
       <body>
         <div class="label_mass">{$userMsg}</div>
         {#if $cities.loading}
@@ -121,6 +121,11 @@
 
             <div />
           </div>
+
+          {#if isLoading}
+          <img class="spinner" alt="loader" src="./loader.gif" />
+          {/if}
+
           <table border="1" class="ourTable">
             <caption>Cities</caption>
             <tr>
@@ -129,26 +134,24 @@
               <th>Population</th>
               <th>Delete</th>
             </tr>
-            {#if $cities.data.laba3_cities.length}
+            
+            {#if $cities.data.laba3_cities?.length}
               {#each $cities.data.laba3_cities as cities (cities.id)}
                 <tr>
                   <td>{cities.city_name}</td>
                   <td>{cities.country_name}</td>
                   <td>{cities.population}</td>
-                  <td
-                    ><button class="btn" on:click={() => deleteCity(cities.id)}
-                      >Delete city</button
-                    ></td
-                  >
+                  <td><button class="btn" on:click={() => deleteCity(cities.id)}>Delete city</button></td>
                 </tr>
               {/each}
             {:else}
               <h1>No cities</h1>
             {/if}
           </table>
+
         {/if}
       </body>
-    {/if}
+    <!-- {/if} -->
   {:else}
     <h1>You are offline</h1>
   {/if}
@@ -177,5 +180,18 @@
   .ourTable {
     margin-left: auto;
     margin-right: auto;
+  }
+  .spinner {
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    height: 800px;
+    width: 1000px;
   }
 </style>
